@@ -58,6 +58,28 @@ const run = async () => {
 
       res.json(result);
     });
+
+    //UPDATE API
+
+    app.put("/users/:id", async (req, res) => {
+      const id = req.params.id;
+      console.log("updating user ", req.body);
+
+      const updatedUser = req.body;
+      const filter = { _id: ObjectId(id) };
+      const options = { upsert: true };
+      const updateDoc = {
+        $set: {
+          name: updatedUser.name,
+          email: updatedUser.email,
+        },
+      };
+      const result = await userCollection.updateOne(filter, updateDoc, options);
+      console.log(
+        `${result.matchedCount} document(s) matched the filter, updated ${result.modifiedCount} document(s)`
+      );
+      res.send(result);
+    });
   } finally {
     // await client.close();
   }
